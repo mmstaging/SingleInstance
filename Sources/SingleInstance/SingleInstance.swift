@@ -1,4 +1,5 @@
 // SingleInstance.swift
+import Foundation
 
 /// The only reason to split root of `SingleInstance` out is so subclasses will not have to use
 /// the `override` keyword when declaring their failable initializer.
@@ -11,9 +12,17 @@ open class SingleInstanceRoot {
 
     private var key: String {"\(type(of: self))"}
 
+    func exemptedFromSingleInstance() -> Bool {
+        let isRunningSwiftUIPreviews = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+        // future exemptions here...
+        return isRunningSwiftUIPreviews // || future exemption || future exemption || ...
+    }
+
     fileprivate init?() {
         guard SingleInstanceRoot.instance[key] == nil else { return nil }
-        SingleInstanceRoot.instance[key] = WeakValue(value: self)
+        if !exemptedFromSingleInstance() {
+            SingleInstanceRoot.instance[key] = WeakValue(value: self)
+        }
     }
 
     deinit {

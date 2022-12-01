@@ -1,8 +1,8 @@
 // SingleInstance.swift
 import Foundation
 
-/// The only reason to split root of `SingleInstance` out is so subclasses will not have to use
-/// the `override` keyword when declaring their failable initializer.
+/// ⚠️ Do not instantiate `SingleInstanceRoot`
+/// This root class exists to facilitate `SingleInstance` subclasses.
 open class SingleInstanceRoot {
     fileprivate struct WeakValue {
         weak var value: AnyObject?

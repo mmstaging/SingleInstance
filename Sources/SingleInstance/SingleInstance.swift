@@ -31,7 +31,7 @@ open class SingleInstance {
         return isRunningSwiftUIPreviews // || future exemption || future exemption || ...
     }
 
-    public init?() {
+    fileprivate init?() {
         guard SingleInstance.instance[key] == nil else { return nil }
         if !exemptedFromSingleInstance() {
             SingleInstance.instance[key] = WeakValue(value: self)

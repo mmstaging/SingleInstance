@@ -11,7 +11,7 @@ open class SingleInstanceRoot {
     static fileprivate var instance = [String: WeakValue]()
 
     private var key: String {"\(type(of: self))"}
-    private var rejected = false
+    private var rejected = true
 
     func exemptedFromSingleInstance() -> Bool {
         let isRunningSwiftUIPreviews = ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
@@ -29,15 +29,17 @@ open class SingleInstanceRoot {
         guard SingleInstanceRoot.instance[key] == nil
         else {
             // extant instance detected. Once that object is destroyed, another one can be created.
-            rejected = true
+            print("rejected = true")
             return nil
         }
         if !exemptedFromSingleInstance() {
             SingleInstanceRoot.instance[key] = WeakValue(value: self)
         }
+        rejected = false
     }
 
     deinit {
+        print("DEINIT: rejected = \(rejected)")
         if !rejected {
             SingleInstanceRoot.instance[key] = nil
         }

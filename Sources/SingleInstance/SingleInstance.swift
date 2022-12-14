@@ -1,5 +1,6 @@
 // SingleInstance.swift
 import Foundation
+import os.log
 
 /// ⚠️ Do not instantiate `SingleInstanceRoot`
 /// This root class exists to facilitate `SingleInstance` subclasses.

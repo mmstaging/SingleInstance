@@ -1,6 +1,5 @@
 // SingleInstance.swift
 import Foundation
-import os.log
 
 /// ⚠️ Do not instantiate `SingleInstanceRoot`
 /// This root class exists to facilitate `SingleInstance` subclasses.
@@ -22,12 +21,15 @@ open class SingleInstanceRoot {
     fileprivate init?() {
         guard type(of: self) !== SingleInstanceRoot.self
         else {
-            os_log("⚠️ ERROR: Do not create direct instances of SingleInstanceRoot class, instantiate subclasses instead.")
+            fatalError("FATAL ERROR: Do not create direct instances of SingleInstanceRoot class, instantiate subclasses instead.")
             return nil
         }
-        os_log("SingleInstanceRoot: \(type(of: self))")
 
-        guard SingleInstanceRoot.instance[key] == nil else { return nil }
+        guard SingleInstanceRoot.instance[key] == nil
+        else {
+            // extant instance detected. Once that object is destroyed, another one can be created.
+            return nil
+        }
         if !exemptedFromSingleInstance() {
             SingleInstanceRoot.instance[key] = WeakValue(value: self)
         }
@@ -56,9 +58,8 @@ open class SingleInstance: SingleInstanceRoot {
     public override required init?() {
         guard type(of: self) !== SingleInstance.self
         else {
-            os_log("⚠️ ERROR: Do not create direct instances of SingleInstance class, instantiate subclasses instead.")
+            fatalError("FATAL ERROR: Do not create direct instances of SingleInstance class, instantiate subclasses instead.")
             return nil
         }
-        os_log("SingleInstance: \(type(of: self))")
     }
 }

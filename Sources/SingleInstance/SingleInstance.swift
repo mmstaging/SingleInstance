@@ -57,6 +57,21 @@ open class SingleInstanceRoot {
 /// are explicit in the code and few lines of code should have access to the object, reducing
 /// potential down-the-line technical debt when original coders are replaced, and also providing
 /// a clean state for each test case, since the Singleton's typically do not deinitialize.
+///
+/// SingleInstance Actor Pattern
+/// -------------------
+/// Actors cannot inherit, therefore composition is used instead.
+/// ```
+/// actor SingleInstanceActor {
+///    fileprivate class SoloActor: SingleInstance  {} // (1) define a dummy single instance subclass
+///    fileprivate let soloActor = SoloActor() // (2) keep a strong reference
+///
+///    init?() {
+///        guard soloActor != nil else { return nil } // (3) guard against multiple instantiation
+///    }
+/// }
+/// ```
+
 open class SingleInstance: SingleInstanceRoot {
     public override required init?() {
         guard type(of: self) !== SingleInstance.self

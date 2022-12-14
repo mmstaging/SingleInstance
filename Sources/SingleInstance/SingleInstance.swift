@@ -19,6 +19,11 @@ open class SingleInstanceRoot {
     }
 
     fileprivate init?() {
+        guard !(type(of: self) === SingleInstanceRoot.self)
+        else {
+            os_log("⚠️ ERROR: Do not create direct instances of SingleInstanceRoot class, instantiate subclasses instead.")
+            return nil
+        }
         guard SingleInstanceRoot.instance[key] == nil else { return nil }
         if !exemptedFromSingleInstance() {
             SingleInstanceRoot.instance[key] = WeakValue(value: self)
@@ -46,6 +51,10 @@ open class SingleInstanceRoot {
 /// a clean state for each test case, since the Singleton's typically do not deinitialize.
 open class SingleInstance: SingleInstanceRoot {
     public override required init?() {
-        super.init()
+        guard !(type(of: self) === SingleInstance.self)
+        else {
+            os_log("⚠️ ERROR: Do not create direct instances of SingleInstance class, instantiate subclasses instead.")
+            return nil
+        }
     }
 }
